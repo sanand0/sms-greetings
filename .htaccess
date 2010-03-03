@@ -1,0 +1,19 @@
+RewriteEngine on
+RewriteBase /birthday
+
+<IfModule wsgi_module>
+    AddHandler wsgi-script .wsgi
+
+    # http://serverfault.com/questions/62195/mod-wsgi-htaccess-and-rewriterule
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ app.wsgi/$1 [QSA,L]
+</IfModule>
+
+<IfModule !wsgi_module>
+    <IfModule fcgid_module>
+        AddHandler fcgid-script .fcgi
+
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^(.*)$ app.fcgi/$1 [QSA,L]
+    </IfModule>
+</IfModule>
