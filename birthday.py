@@ -2,12 +2,11 @@ import site
 site.addsitedir('/home/sanand/lib/python2.4/site-packages')
 site.addsitedir('/usr/local/lib/python2.4/site-packages')   # for mysql-python
 
-import web, jinja2, os.path, cgi, xml.dom.minidom
+import web, jinja2, os.path, cgi, xml.dom.minidom, smsgateway
 from web import form
 from urllib import urlopen, urlencode
 try: import simplejson as json
-except ImportError:
-    from django.utils import simplejson as json
+except ImportError: from django.utils import simplejson as json
 
 greetingform = form.Form(   # id, user, time,
     form.Textbox('mobile'),
@@ -25,6 +24,7 @@ env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.join(os.path.spl
 urls = (
   '/',              'index',
   '/login/(.+)',    'login',
+  '/sms',           'sms',
   '/reminder',      'reminder'
 )
 
@@ -39,6 +39,15 @@ class index:
             greetings=session.has_key('user') and db.select('greeting', where='user = %d' % session.user) or None,
             session=session
         ).encode('utf-8')
+
+class sms:
+    def GET(self):
+        web.header('Content-type', 'text/html')
+        return env.get_template('sms.html').render().encode('utf-8')
+
+    def POST(self):
+        i = web.input('to', 'message', 'sender')
+        return '''Message status: %s\nThe SMS should be sent in a few seconds.''' % smsgateway.send(i.to, i.message, i.sender)
 
 class reminder:
     def POST(self):
