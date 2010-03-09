@@ -115,52 +115,6 @@ class logout:
 application = app.wsgifunc()
 
 '''
-login = (*id, +user, attr)
-user = (*id, mobile, ...)
-greeting = (*id,
-
-CREATE DATABASE  `sanand_greeting` ;
-
-Grant privileges to sanand_gr/sanand to this database
-
-CREATE TABLE  `sanand_greeting`.`greeting` (
-`id` INT NOT NULL AUTO_INCREMENT ,
-`user` INT NOT NULL ,
-`time` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-`mobile` VARCHAR( 250 ) NOT NULL ,
-`name` VARCHAR( 250 ) NOT NULL ,
-`event` VARCHAR( 250 ) NOT NULL ,
-`date` DATE NOT NULL ,
-`relation` VARCHAR( 250 ) NOT NULL ,
-`message` TEXT NOT NULL ,
-PRIMARY KEY (  `id` ) ,
-INDEX (  `user` )
-) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;
-
-CREATE TABLE `sanand_greeting`.`sessions` (
-`session_id` CHAR(128) UNIQUE NOT NULL,
-`atime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-`data` TEXT
-) ENGINE MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;
-
-CREATE TABLE  `sanand_greeting`.`login` (
-`id` VARCHAR( 250 ) NOT NULL ,
-`user` INT NOT NULL ,
-`attr` TEXT NOT NULL ,
-PRIMARY KEY (  `id` ) ,
-INDEX (  `user` )
-) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;
-
-CREATE TABLE  `sanand_greeting`.`user` (
-`user` INT NOT NULL AUTO_INCREMENT ,
-`mobile` VARCHAR(250),
-PRIMARY KEY (  `user` )
-) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci ;
-
-
-'''
-
-'''
 openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0
 openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0
 
@@ -202,5 +156,4 @@ openid.ext1.type.lastname=http%3A%2F%2Faxschema.org%2FnamePerson%2Flast
 openid.ext1.value.lastname=S
 openid.ext1.type.country=http%3A%2F%2Faxschema.org%2Fcontact%2Fcountry%2Fhome
 openid.ext1.value.country=GB
-
 '''
