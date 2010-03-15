@@ -1,0 +1,7 @@
+syntax: glob
+
+*.pyc
+*.swp
+.DS_Store
+Thumbs.db
+index.yaml

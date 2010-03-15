@@ -1,6 +1,5 @@
 CREATE DATABASE  `sanand_greeting` ;
-
-Grant privileges to sanand_gr/sanand to this database
+GRANT ALL PRIVILEGES ON  `sanand_greeting` . * TO  'sanand_gr'@'localhost' WITH GRANT OPTION ;
 
 CREATE TABLE  `sanand_greeting`.`greeting` (
 `id` INT NOT NULL AUTO_INCREMENT ,

@@ -3,6 +3,8 @@ site.addsitedir('/home/sanand/lib/python2.4/site-packages')
 site.addsitedir('/usr/local/lib/python2.4/site-packages')   # for mysql-python
 
 import web, jinja2, os.path, cgi, xml.dom.minidom, smsgateway
+from model_mysql import *
+from auth import GoogleLogin, TwitterLogin
 from web import form
 from urllib import urlopen, urlencode
 try: import simplejson as json
@@ -17,13 +19,12 @@ greetingform = form.Form(   # id, user, time,
     form.Textarea('message'),
 )
 
-db = web.database(dbn='mysql', db='sanand_greeting', user='sanand_gr', pw='sanand')
-store = web.session.DBStore(db, 'sessions')
 env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.join(os.path.split(__file__)[0], 'template')))
 
 urls = (
   '/',              'index',
   '/login/(.+)',    'login',
+  '/auth/google',   'GoogleLogin',
   '/sms',           'sms',
   '/reminder',      'reminder'
 )
@@ -113,47 +114,3 @@ class logout:
         web.seeother('/')
 
 application = app.wsgifunc()
-
-'''
-openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0
-openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0
-
-openid.mode=id_res
-openid.mode=id_res
-
-openid.op_endpoint=https%3A%2F%2Fwww.google.com%2Faccounts%2Fo8%2Fud
-openid.op_endpoint=https%3A%2F%2Fwww.google.com%2Faccounts%2Fo8%2Fud
-
-openid.response_nonce=2010-02-20T13%3A37%3A23ZW_BIK9Rp4vGzNw
-openid.response_nonce=2010-02-20T13%3A39%3A51Zd-fmjmaxkXX71Q
-
-openid.return_to=http%3A%2F%2Flocalhost%3A8080%2Flogin%2Fgoogle%2Freturn
-openid.return_to=http%3A%2F%2Flocalhost%3A8080%2Flogin%2Fgoogle%2Freturn
-
-openid.assoc_handle=AOQobUdfSj-o130r9GPozaqCxV7G_ifUMEYn3zkTe63y_vWiQDOH8zGS
-openid.assoc_handle=AOQobUerEO7XZwm6lIUxRZ0zcGSF_IkEZIJl6Kyj90lqX7uIXOhMj6gj
-
-openid.signed=op_endpoint%2Cclaimed_id%2Cidentity%2Creturn_to%2Cresponse_nonce%2Cassoc_handle
-openid.signed=op_endpoint%2Cclaimed_id%2Cidentity%2Creturn_to%2Cresponse_nonce%2Cassoc_handle
-openid.signed=op_endpoint%2Cclaimed_id%2Cidentity%2Creturn_to%2Cresponse_nonce%2Cassoc_handle%2Cns.ext1%2Cext1.mode%2Cext1.type.firstname%2Cext1.value.firstname%2Cext1.type.email%2Cext1.value.email%2Cext1.type.lastname%2Cext1.value.lastname%2Cext1.type.country%2Cext1.value.country
-
-openid.sig=Wu48tQYpdQRhxpb1zWwCUYcsdxY%3D
-openid.sig=LL1OU1qT5KSBUGqTzxs23LmPPVo%3D
-
-openid.identity=https%3A%2F%2Fwww.google.com%2Faccounts%2Fo8%2Fid%3Fid%3DAItOawkdOL1Hza1_GjtoGzoFL8nVjSmNONRW8fQ
-openid.identity=https%3A%2F%2Fwww.google.com%2Faccounts%2Fo8%2Fid%3Fid%3DAItOawkdOL1Hza1_GjtoGzoFL8nVjSmNONRW8fQ
-
-openid.claimed_id=https%3A%2F%2Fwww.google.com%2Faccounts%2Fo8%2Fid%3Fid%3DAItOawkdOL1Hza1_GjtoGzoFL8nVjSmNONRW8fQ
-openid.claimed_id=https%3A%2F%2Fwww.google.com%2Faccounts%2Fo8%2Fid%3Fid%3DAItOawkdOL1Hza1_GjtoGzoFL8nVjSmNONRW8fQ
-
-openid.ns.ext1=http%3A%2F%2Fopenid.net%2Fsrv%2Fax%2F1.0
-openid.ext1.mode=fetch_response
-openid.ext1.type.firstname=http%3A%2F%2Faxschema.org%2FnamePerson%2Ffirst
-openid.ext1.value.firstname=Anand
-openid.ext1.type.email=http%3A%2F%2Fschema.openid.net%2Fcontact%2Femail
-openid.ext1.value.email=root.node%40gmail.com
-openid.ext1.type.lastname=http%3A%2F%2Faxschema.org%2FnamePerson%2Flast
-openid.ext1.value.lastname=S
-openid.ext1.type.country=http%3A%2F%2Faxschema.org%2Fcontact%2Fcountry%2Fhome
-openid.ext1.value.country=GB
-'''
