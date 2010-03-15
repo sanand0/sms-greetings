@@ -10,6 +10,7 @@
 import functools
 import logging
 import httplib2
+from webpyauth import RequestRedirect
 
 browser = httplib2.Http()
 
@@ -33,7 +34,11 @@ class AsyncHTTPClient(object):
             setattr(status, 'body', content)
             try:
                 return callback(status)
+            except RequestRedirect, e:
+                raise e
             except Exception, e:
                 logging.error("Exception during callback", exc_info=True)
+        except RequestRedirect, e:
+            raise e
         except Exception, e:
             result = HttpResponseError()

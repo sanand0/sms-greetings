@@ -4,7 +4,7 @@ site.addsitedir('/usr/local/lib/python2.4/site-packages')   # for mysql-python
 
 import web, jinja2, os.path, cgi, xml.dom.minidom, smsgateway
 from model_mysql import *
-from auth import GoogleLogin, TwitterLogin
+from auth import GoogleLogin, TwitterLogin, FacebookLogin
 from web import form
 from urllib import urlopen, urlencode
 try: import simplejson as json
@@ -25,6 +25,8 @@ urls = (
   '/',              'index',
   '/login/(.+)',    'login',
   '/auth/google',   'GoogleLogin',
+  '/auth/twitter',  'TwitterLogin',
+  '/auth/facebook/?', 'FacebookLogin',
   '/sms',           'sms',
   '/reminder',      'reminder'
 )

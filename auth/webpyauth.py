@@ -114,6 +114,8 @@ class WebappAuth(object):
         def wrapper(*args, **kwargs):
             try:
                 return callback(*args, **kwargs)
+            except RequestRedirect, e:
+                raise e
             except Exception, e:
                 logging.error('Exception during callback', exc_info=True)
 
@@ -152,8 +154,8 @@ class WebappAuth(object):
         if value is self._ARG_DEFAULT:
             raise HttpException()
 
-        if strip:
-            value = value.strip()
+        if isinstance(value, list): value = value[0]
+        if strip: value = value.strip()
 
         return value
 
