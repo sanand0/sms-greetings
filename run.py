@@ -1,3 +1,3 @@
-from birthday import app
+from greeting import app
 
 app.run()

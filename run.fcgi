@@ -1,5 +1,5 @@
 #!/usr/bin/env python
 
-import fcgi, birthday
+import fcgi, greeting
 
-fcgi.WSGIServer(birthday.application).run()
+fcgi.WSGIServer(greeting.application).run()
