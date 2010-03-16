@@ -18,6 +18,7 @@ h1 { background-image: url(static/sms-greetings-heading.png); text-indent: -9999
 
 .add { background-color: #f8dddd; }
 .show { background-color: #ddddf8; }
+.debug { background-color: #cfc; }
 
 .show table tr { border-bottom: 1px solid #008; }
 .show table td { padding: 3px 8px; }
@@ -87,6 +88,13 @@ a.button span,span.button button,span.button input,del.button span{white-space:n
         <h2>About this application</h2>
         <p>Some text</p>
       {% endif %}
+     </div>
+
+     <div>&nbsp;</div>
+
+     <div class="debug greeting">
+      <h2>Debug messages</h2>
+      <p>{{ debug }}</p>
      </div>
     </div>
 </div>

@@ -31,13 +31,22 @@ urls = (
   '/reminder',      'reminder'
 )
 
-app = web.application(urls, globals(), autoreload=False)
+class birthdayapp(web.application):
+    '''Patch web.application to remove .wsgi or .fcgi script name'''
+    def load(self, env):
+        web.application.load(self, env)
+        if web.ctx.homepath.endswith('.wsgi') or web.ctx.homepath.endswith('.fcgi'):
+            web.ctx.homepath = os.path.split(web.ctx.homepath)[0]
+            web.ctx.home = web.ctx.homedomain + web.ctx.homepath
+
+app = birthdayapp(urls, globals(), autoreload=False)
 session = web.session.Session(app, store, initializer={})
 
 class index:
     def GET(self):
         web.header('Content-type', 'text/html')
         return env.get_template('index.html').render(
+            debug='Home: ' + repr(web.ctx.home),
             form=greetingform(),
             greetings=session.has_key('user') and db.select('greeting', where='user = %d' % session.user) or None,
             session=session
@@ -47,6 +56,7 @@ class sms:
     def GET(self):
         web.header('Content-type', 'text/html')
         return env.get_template('sms.html').render().encode('utf-8')
+        return env.get_template('sms.html').render().encode('utf-8')
 
     def POST(self):
         i = web.input('to', 'message', 'sender')
@@ -55,10 +65,10 @@ class sms:
 class reminder:
     def POST(self):
         f = greetingform()
-        if session.has_key('user') and f.validates():
-            fields = dict(f.d)
-            fields['user'] = session.user
-            db.insert('greeting', **fields)
+        if 1 or session.has_key('user') and f.validates():
+            # fields = dict(f.d)
+            # fields['user'] = session.user
+            # db.insert('greeting', **fields)
             raise web.seeother('/')
         else:
             return 'You need to log in'

@@ -24,8 +24,10 @@ class Login:
 
 
 class GoogleLogin(webpyauth.WebappAuth, auth.GoogleMixin, Login):
-    def has_user(self):
-        return web.input().get("openid.mode", None)
+    def __init__(self):
+        webpyauth.WebappAuth.__init__(self)
+
+    def has_user(self): return web.input().get("openid.mode", None)
 
 class TwitterLogin(webpyauth.WebappAuth, auth.TwitterMixin, Login):
     def __init__(self):
@@ -36,16 +38,15 @@ class TwitterLogin(webpyauth.WebappAuth, auth.TwitterMixin, Login):
             twitter_consumer_secret = 'VL28QvbgbqW8cAssCUzqrtaXK3MxNM0pmXmeuQHYFQ',
         )
 
-    def has_user(self):
-        return web.input().get("oauth_token", None)
+    def has_user(self): return web.input().get("oauth_token", None)
 
 class FacebookLogin(webpyauth.WebappAuth, auth.FacebookMixin, Login):
     def __init__(self):
         # http://www.facebook.com/developers/editapp.php?app_id=369944562357
+        # Set Connect URL to the return value
         webpyauth.WebappAuth.__init__(self,
             facebook_api_key    = 'b7166989bdf0ad62b809237091d5d576',
             facebook_secret     = '2b1b0705b4e1bea41f70402ea49799d7',
         )
 
-    def has_user(self):
-        return web.input().get("session", None)
+    def has_user(self): return web.input().get("session", None)
