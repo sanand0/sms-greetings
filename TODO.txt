@@ -17,3 +17,8 @@ Todo:
     - get/type mobile         _        _         _
 
     - refactor model
+
+
+Problems with web.py
+- web.ctx.home -- how do I deploy in a subdirectory?
+- web.session -- how do I access it in a request? (http://webpy.org/cookbook/session_with_reloader)

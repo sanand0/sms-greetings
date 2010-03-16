@@ -29,7 +29,6 @@ h1 { background-image: url(static/sms-greetings-heading.png); text-indent: -9999
 * html .container_12{height:1%}
 .container_12{display:block}
 
-
 /* http://www.hedgerwow.com/360/dhtml/css-round-button/demo.php */
 a.button,span.button,del.button,a.button span,span.button button,span.button input,del.button span{background-image:url(static/button-light-green.png);_background-image:url(static/button-light-green.gif);}
 a.button,span.button,del.button{display:-moz-inline-box;display:inline-block;cursor:pointer;border:none;font-size:0;line-height:0;background-position:0 0;background-repeat:no-repeat;height:30px;text-decoration:none;color:#fff;font-style:normal;margin:0 6px 0 0;padding:0 10px 0 0;vertical-align:middle;padding-top:-2px;_position:relative;_width:10px;_overflow-y:hidden;}
@@ -59,9 +58,9 @@ a.button span,span.button button,span.button input,del.button span{white-space:n
         {% if not session.name %}
           <h2>First, you need to log in</h2>
           <p>You can use your existing Google, Facebook or Twitter IDs to log in</p>
-          <a class="button" href="/login/google"><span>Google</span></a>
-          <a class="button" href="/login/facebook"><span>Facebook</span></a>
-          <a class="button" href="/login/twitter"><span>Twitter</span></a>
+          <a class="button" href="login/google"><span>Google</span></a>
+          <a class="button" href="login/facebook"><span>Facebook</span></a>
+          <a class="button" href="login/twitter"><span>Twitter</span></a>
         {% else %}
           <span class="button"><button type="submit" id="Submit" name="Submit">Submit</button></span>
         {% endif %}
@@ -94,7 +93,8 @@ a.button span,span.button button,span.button input,del.button span{white-space:n
 
      <div class="debug greeting">
       <h2>Debug messages</h2>
-      <p>{{ debug }}</p>
+      <p>User: {{ session.user }}</p>
+      <p>Name: {{ session.name }}</p>
      </div>
     </div>
 </div>
