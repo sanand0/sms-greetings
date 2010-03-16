@@ -1,5 +1,8 @@
 import web
 from auth import webpyauth, auth # WebappAuth, RequestRedirect, HttpException
+from model_mysql import db, store
+try: import simplejson as json
+except ImportError: from django.utils import simplejson as json
 
 class Logout:
     def GET(self):
@@ -20,10 +23,25 @@ class Login:
 
     def _on_auth(self, user):
         if user:
-            # Store this information and assign a user ID
-            key, name, attr = self.get_user(user)
-            web.config._session.user = key
+            id, name, attr = self.get_user(user)
+            attr_str = json.dumps(user)
+            had_logged_in = db.select('login', where='id = "%s"' % id)
+
+            # Already logged in. Update or insert data
+            if web.config._session.has_key('user'):
+                if had_logged_in:  db.update('login', where='id="%s" and user="%s"' % (id, web.config._session.user), attr=attr_str)
+                else:              db.insert('login', id=id, user=web.config._session.user, attr=attr_str)
+
+            # Not currently logged_in
+            else:
+                if not had_logged_in:
+                    db.insert('login', id=id, attr=attr_str)
+                    had_logged_in = db.select('login', where='id = "%s"' % id)
+
+                web.config._session.user = had_logged_in[0].user
+
             web.config._session.name = name
+
         else:
             web.debug('Did not get user')
             # TODO: Send to failed auth page or something.
@@ -48,7 +66,7 @@ class Twitter(webpyauth.WebappAuth, auth.TwitterMixin, Login):
         )
 
     def has_user(self): return web.input().get("oauth_token", None)
-    
+
     def get_user(self, user): return 'tw:', '', {}
 
 class Facebook(webpyauth.WebappAuth, auth.FacebookMixin, Login):

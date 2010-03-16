@@ -23,7 +23,7 @@ CREATE TABLE `sanand_greeting`.`sessions` (
 
 CREATE TABLE  `sanand_greeting`.`login` (
 `id` VARCHAR( 250 ) NOT NULL ,
-`user` INT NOT NULL ,
+`user` INT NOT NULL AUTO_INCREMENT,
 `attr` TEXT NOT NULL ,
 PRIMARY KEY (  `id` ) ,
 INDEX (  `user` )

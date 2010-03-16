@@ -1,3 +1,7 @@
+Deployment steps:
+- Execute config.sql on mysql
+- run.py
+
 Specs:
 - Sends scheduled birthday greetings to friends via SMS
 - Log in with your Google, Yahoo, Facebook, Twitter or Open ID.
@@ -10,14 +14,11 @@ Specs:
 
 Todo:
                             Google  Facebook  Twitter
-    / connect via gaema       _        _         _
-    / fix the app.wsgi url
-    - store user id
+    - connect via gaema       /        /         _
     - get contacts            _        _         _
     - get/type mobile         _        _         _
 
     - refactor model
-
 
 Problems with web.py
 - web.ctx.home -- how do I deploy in a subdirectory?
