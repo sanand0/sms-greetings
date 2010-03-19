@@ -1,4 +1,4 @@
-import web
+import web, random, smsgateway
 from auth import webpyauth, auth # WebappAuth, RequestRedirect, HttpException
 from model_mysql import db, store
 try: import simplejson as json
@@ -15,9 +15,10 @@ class Login:
         try:
             if self.has_user():
                 self.get_authenticated_user(self._on_auth)
+                # TODO: May not have gotten authenticated... how to handle failure?
                 raise webpyauth.RequestRedirect(url=web.ctx.home)
             else:
-                self.authenticate_redirect()
+                return self.authenticate_redirect()
         except webpyauth.RequestRedirect, e:
             raise web.seeother(e.url)
 
@@ -44,7 +45,7 @@ class Login:
 
         else:
             web.debug('Did not get user')
-            # TODO: Send to failed auth page or something.
+            # TODO: Raise RequestRedirect to failed auth page or something.
 
 
 class Google(webpyauth.WebappAuth, auth.GoogleMixin, Login):
@@ -82,3 +83,40 @@ class Facebook(webpyauth.WebappAuth, auth.FacebookMixin, Login):
 
     # Facebook user = {'username': u'root.node', 'first_name': u'Anand', 'last_name': u'Subramanian', 'name': u'Anand Subramanian', 'locale': u'en_US', 'session_expires': 1268740800, 'pic_square': u'http://profile.ak.fbcdn.net/v225/1772/65/q655833454_7617.jpg', 'session_key': u'3.1eXoKggHvlfOw4KzSanrNg__.3600.1268740800-655833454', 'profile_url': u'http://www.facebook.com/root.node', 'uid': 655833454}
     def get_user(self, user): return 'fb:' + str(user.get('uid', None)), user.get('name', ''), user
+
+class Mobile(Login):
+    def authenticate_redirect(self):
+        web.header('Content-type', 'text/html')
+        return web.config._render('mobile-login.html', {})
+
+    def get_authenticated_user(self, callback):
+        input = web.input()
+        mobile, password = input.get('mobile', None), input.get('password', None)
+        registered = db.select('mobile', where='mobile = "%s"' % mobile)
+        if registered:
+            entry = registered[0]
+            if entry.password == password: return callback(entry)
+
+        raise webpyauth.RequestRedirect(url='/login/mobile?failed')
+
+    def has_user(self):
+        return web.input().get('password', None)
+
+    def get_user(self, user):
+        return 'mo:' + user.mobile, user.name, user
+
+class MobileRegister:
+    def POST(self):
+        input = web.input()
+        mobile, name = input.get('mobile', None), input.get('name', None)
+
+        # Generate a password and store it in the database
+        password = str(random.randint(1000, 9999))
+        registered = db.select('mobile', where='mobile = "%s"' % mobile)
+        if registered: db.update('mobile', where='mobile = "%s"' % mobile, name=name, password=password)
+        else:          db.insert('mobile', mobile=mobile, name=name, password=password)
+
+        # Send the password via SMS
+        smsgateway.send(to=mobile, message='Password is %s' % password)
+
+        return '''<body>Your password has been sent via mobile. You should get it in a few seconds. <a href="mobile">Log in with your new password</a>.</body>'''

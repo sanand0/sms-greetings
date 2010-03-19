@@ -2,11 +2,10 @@ import site
 site.addsitedir('/home/sanand/lib/python2.4/site-packages')
 site.addsitedir('/usr/local/lib/python2.4/site-packages')   # for mysql-python
 
-import web, jinja2, os.path, cgi, xml.dom.minidom, smsgateway, login
-from model_mysql import *
-from urllib import urlopen, urlencode
-try: import simplejson as json
-except ImportError: from django.utils import simplejson as json
+import os.path, cgi, ConfigParser
+import web, jinja2
+import smsgateway, login
+from model_mysql import db, store
 
 greetingform = web.form.Form(   # id, user, time,
     web.form.Textbox('mobile'),
@@ -17,13 +16,13 @@ greetingform = web.form.Form(   # id, user, time,
     web.form.Textarea('message'),
 )
 
-env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.join(os.path.split(__file__)[0], 'template')))
-
 urls = (
   '/',                  'index',
   '/login/google',      'login.Google',
   '/login/twitter',     'login.Twitter',
   '/login/facebook/?',  'login.Facebook',
+  '/login/mobile',      'login.Mobile',
+  '/login/register',    'login.MobileRegister',
   '/logout',            'login.Logout',
   '/sms',               'sms',
   '/reminder',          'reminder'
@@ -40,18 +39,17 @@ class greetingapp(web.application):
 class index:
     def GET(self):
         web.header('Content-type', 'text/html')
-        return env.get_template('index.html').render(
-            home=web.ctx.home,
-            form=greetingform(),
-            greetings=web.config._session.has_key('user') and db.select('greeting', where='user = "%s"' % web.config._session.user) or None,
-            session=web.config._session
-        ).encode('utf-8')
+        return web.config._render('index.html', {
+            'home'      :web.ctx.home,
+            'form'      :greetingform(),
+            'greetings' :web.config._session.has_key('user') and db.select('greeting', where='user = "%s"' % web.config._session.user) or None,
+            'session'   :web.config._session
+        })
 
 class sms:
     def GET(self):
         web.header('Content-type', 'text/html')
-        return env.get_template('sms.html').render().encode('utf-8')
-        return env.get_template('sms.html').render().encode('utf-8')
+        return web.config._render('sms.html', {})
 
     def POST(self):
         i = web.input('to', 'message', 'sender')
@@ -69,6 +67,12 @@ class reminder:
             return 'You need to log in'
 
 app = greetingapp(urls, globals(), autoreload=True)
-session = web.session.Session(app, store, initializer={})
-web.config._session = session
+web.config._session = web.session.Session(app, store, initializer={})
+web.config._template = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.join(os.path.split(__file__)[0], 'template')))
+web.config._render = lambda template, params: web.config._template.get_template(template).render(**params).encode('utf-8')
+
+params = ConfigParser.RawConfigParser()
+params.read(os.path.join(os.path.split(__file__)[0], 'config.ini'))
+for section in params.sections(): web.config[section] = web.utils.Storage(params.items(section))
+
 application = app.wsgifunc()

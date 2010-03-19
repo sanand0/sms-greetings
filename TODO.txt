@@ -13,13 +13,17 @@ Specs:
 
 
 Todo:
-                            Google  Facebook  Twitter
-    - connect via gaema       /        /         _
-    - get contacts            _        _         _
-    - get/type mobile         _        _         _
+                    Google  Facebook  Twitter   Mobile
+    - connect         /        /         _        /
+    - contacts        _        _         _        _
+    - greetings
 
-    - refactor model
+    - when not logged in, only allow them to log in. Don't allow adding greetings
 
 Problems with web.py
 - web.ctx.home -- how do I deploy in a subdirectory?
+    webpyauth.py: RequestAdaptor.__init__: use REALHOME in full_url? Or somewhere else? Might get Google to come back to subdirectory
 - web.session -- how do I access it in a request? (http://webpy.org/cookbook/session_with_reloader)
+
+
+- mobile openid provider!!! oh that'd be so cool! You can charge for it. Just do it!

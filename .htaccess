@@ -1,9 +1,8 @@
 RewriteEngine on
-RewriteBase /greeting
 
 <IfModule wsgi_module>
     AddHandler wsgi-script .wsgi
-
+    
     # http://serverfault.com/questions/62195/mod-wsgi-htaccess-and-rewriterule
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(.*)$ run.wsgi/$1 [QSA,L]

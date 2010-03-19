@@ -37,66 +37,68 @@ a.button span,span.button button,span.button input,del.button span{white-space:n
 </head><body>
 
 <div class="blackbar">
-    <div class="container_12">
-        <div class="grid_6">
-            <h1>SMS Greetings</h1>
-        </div>
-        <div class="grid_6 summary">
-            <i>Never forget a birthday or anniversary!</i>
-            <br><i>Type in their mobile, birthday and a message.</i>
-            <br><i>We'll send them your message by SMS on their birthday.</i>
-        </div>
-    </div>
+ <div class="container_12">
+  <div class="grid_6">
+   <h1>SMS Greetings</h1>
+  </div>
+  <div class="grid_6 summary">
+   <i>Never forget a birthday or anniversary!</i>
+   <br><i>Type in their mobile, birthday and a message.</i>
+   <br><i>We'll send them your message by SMS on their birthday.</i>
+  </div>
+ </div>
 </div>
 <br>
 <div class="container_12">
-    <div class="grid_4">
-    <form class="add greeting" action="reminder" method="post">
-       <fieldset>
-        <legend>Add a greeting</legend>
-        {{ form.render() }}
-        {% if not session.name %}
-          <h2>First, you need to log in</h2>
-          <p>You can use your existing Google, Facebook or Twitter IDs to log in</p>
-          <a class="button" href="login/google"><span>Google</span></a>
-          <a class="button" href="login/facebook"><span>Facebook</span></a>
-          <a class="button" href="login/twitter"><span>Twitter</span></a>
-        {% else %}
-          <span class="button"><button type="submit" id="Submit" name="Submit">Submit</button></span>
-        {% endif %}
-       </fieldset>
-    </form>
-    </div>
+ <div class="grid_4">
+ <form class="add greeting" action="reminder" method="post">
+  <fieldset>
+   <legend>Add a greeting</legend>
+   {{ form.render() }}
+   {% if not session.name %}
+    <h2>First, you need to log in</h2>
+    <p>You can use your existing Google, Facebook or Twitter IDs to log in</p>
+   {% else %}
+    <span class="button"><button type="submit" id="Submit" name="Submit">Submit</button></span>
+    <h2>Find friends with:</h2>
+   {% endif %}
+   <a class="button" href="login/google"><span>Google</span></a>
+   <a class="button" href="login/facebook"><span>Facebook</span></a>
+   <a class="button" href="login/twitter"><span>Twitter</span></a>
+   <a class="button" href="login/mobile"><span>Mobile</span></a>
+  </fieldset>
+ </form>
+ </div>
 
-    <div class="grid_8">
-     <div class="show greeting">
-      {% if session.name %}
-        <h2>Greetings for {{ session.name }}</h2>
-        {% if greetings %}
-            <table>
-                <tr><th>Name</th><th>Mobile</th><th>Event</th><th>Date</th><th>Message</th></tr>
-            {% for greeting in greetings %}
-                <tr><td>{{ greeting.name }}</td><td>{{ greeting.mobile }}</td><td>{{ greeting.event }}</td><td>{{ greeting.date }}</td><td>{{ greeting.message }}</td></tr>
-            {% endfor %}
-            </table>
-        {% else %}
-            <p>You have set up no greetings so far.</p>
-            <p>Fill in the birthday of one of your friends to send them an SMS on their birthday.</p>
-        {% endif %}
-      {% else %}
-        <h2>About this application</h2>
-        <p>Some text</p>
-      {% endif %}
-     </div>
+ <div class="grid_8">
+  <div class="show greeting">
+   {% if session.name %}
+    <h2>Greetings for {{ session.name }}</h2>
+    {% if greetings %}
+     <table>
+      <tr><th>Name</th><th>Mobile</th><th>Event</th><th>Date</th><th>Message</th></tr>
+     {% for greeting in greetings %}
+      <tr><td>{{ greeting.name }}</td><td>{{ greeting.mobile }}</td><td>{{ greeting.event }}</td><td>{{ greeting.date }}</td><td>{{ greeting.message }}</td></tr>
+     {% endfor %}
+     </table>
+    {% else %}
+     <p>You have set up no greetings so far.</p>
+     <p>Fill in the birthday of one of your friends to send them an SMS on their birthday.</p>
+    {% endif %}
+   {% else %}
+     <h2>About this application</h2>
+     <p>Some text</p>
+   {% endif %}
+  </div>
 
-     <div>&nbsp;</div>
+  <div>&nbsp;</div>
 
-     <div class="debug greeting">
-      <h2>Debug messages</h2>
-      <p>User: {{ session.user }}</p>
-      <p>Name: {{ session.name }}</p>
-     </div>
-    </div>
+  <div class="debug greeting">
+   <h2>Debug messages</h2>
+   <p>User: {{ session.user }}</p>
+   <p>Name: {{ session.name }}</p>
+  </div>
+ </div>
 </div>
 
 <script>

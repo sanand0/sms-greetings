@@ -1,5 +1,6 @@
 syntax: glob
 
+config.ini
 *.pyc
 *.swp
 .DS_Store
