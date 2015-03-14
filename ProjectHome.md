@@ -1,0 +1,1 @@
+Sends greetings to Indian SMS numbers on specific events
